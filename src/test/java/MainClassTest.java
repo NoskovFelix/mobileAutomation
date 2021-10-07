@@ -11,4 +11,11 @@ public class MainClassTest {
                 expectedValue, actualValue);
     }
 
+    @Test
+    public void testGetClassNumber(){
+        int expectedValue = MainClass.getClassNumber();
+        Assert.assertTrue("метод getClassNumber вернул число < 45, вернулось " + expectedValue,
+                expectedValue > 45);
+    }
+
 }
