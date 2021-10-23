@@ -6,14 +6,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.URL;
+import java.util.List;
 
 public class FirstTest {
 
@@ -66,11 +65,29 @@ public class FirstTest {
                 5);
     }
 
+    @Test
+    public void checkContainWordInSearchTitle(){
+
+        waitForElementAndClick(By.xpath("//*[@resource-id='org.wikipedia:id/search_container']//*[@text='Search Wikipedia']"));
+
+        waitForElementAndSendKeys(By.id("org.wikipedia:id/search_src_text"), "JAVA");
+
+        assertAllElementContainText(By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_title']"),"Java");
+    }
+
 
 
     private void compareThatActualValueMoreThanExpected(By by, int expectedValue){
         int actualValue = driver.findElements(by).size();
         Assert.assertTrue("actual value less than expected", actualValue > expectedValue);
+    }
+
+    private void assertAllElementContainText(By by, String text){
+        List <WebElement> elements = driver.findElements(by);
+        for (WebElement element: elements){
+            Assert.assertTrue("Element '" + element.getText() + "' not contain '" + text + "'",
+                    element.getText().contains(text));
+        }
     }
 
 
