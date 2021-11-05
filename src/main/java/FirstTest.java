@@ -19,6 +19,8 @@ import java.util.List;
 public class FirstTest {
 
     private AppiumDriver driver;
+    private static final String defaultSearchArticleLocator = "//*[@resource-id='org.wikipedia:id/page_list_item_title']";
+
 
     @Before
     public void setUp() throws Exception{
@@ -82,7 +84,6 @@ public class FirstTest {
         String folderName = "TestFolder";
         String article_1 = "Java";
         String article_2 = "JavaScript";
-        String defaultSearchArticleLocator = "//*[@resource-id='org.wikipedia:id/page_list_item_title']";
 
         // создаем и добавляем первую статью
         waitForElementAndClick(By.xpath("//*[@resource-id='org.wikipedia:id/search_container']//*[@text='Search Wikipedia']"));
@@ -144,6 +145,24 @@ public class FirstTest {
                 article_2,
                 articleTitle.getText()
                 );
+    }
+
+    @Test
+    public void checkElementPresentWithoutWait(){
+
+        String articleTitle = "Java";
+        waitForElementAndClick(By.xpath("//*[@resource-id='org.wikipedia:id/search_container']//*[@text='Search Wikipedia']"));
+
+        waitForElementAndSendKeys(By.id("org.wikipedia:id/search_src_text"), articleTitle);
+
+        waitForElementAndClick(By.xpath(defaultSearchArticleLocator + "[@text='"+ articleTitle + "']"));
+
+        Assert.assertTrue("Element with title '" + articleTitle + "' not present on the page",
+                assertElementPresent(By.xpath("//*[@resource-id = 'org.wikipedia:id/view_page_title_text'][@text='"+ articleTitle + "']")));
+    }
+
+    private boolean assertElementPresent(By by){
+        return driver.findElements(by).size() > 0;
     }
 
     private String getAttributeFromElement(By by, String attribute){
