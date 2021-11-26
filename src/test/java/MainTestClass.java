@@ -116,5 +116,25 @@ public class MainTestClass extends CoreTestCase {
                 mainPageObject.assertElementPresent(By.xpath("//*[@resource-id = 'org.wikipedia:id/view_page_title_text'][@text='"+ articleTitle + "']")));
     }
 
+    @Test
+    public void testPresentElementsWithTitleAndDescription(){
+
+        SearchPageObject searchPageObject = new SearchPageObject(driver);
+        searchPageObject.initSearchInput();
+        searchPageObject.sendValueInSearchInput("Java");
+
+        searchPageObject.waitForElementByTitleAndDescription(
+                "Java",
+                "Island of Indonesia"
+        );
+        searchPageObject.waitForElementByTitleAndDescription(
+                "JavaScript",
+                "Programming language"
+        );
+        searchPageObject.waitForElementByTitleAndDescription(
+                "Java (programming language)",
+                "Object-oriented programming language"
+        );
+    }
 
 }

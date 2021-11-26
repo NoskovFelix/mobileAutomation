@@ -128,4 +128,17 @@ public class MainPageObject {
     public String replaceTemplate(String str, String template, String replacedValue){
         return str.replace(template, replacedValue);
     }
+
+    public String replaceTemplates(String str, String[] templates, String[] replacedValues){
+        if (templates.length != replacedValues.length)
+            throw new RuntimeException("templates size not equals replaces values list size!");
+
+        StringBuilder stringBuilder = new StringBuilder(str);
+
+        for (int i = 0; i < templates.length; i ++) {
+            stringBuilder = new StringBuilder(replaceTemplate(stringBuilder.toString(), templates[i], replacedValues[i]));
+        }
+
+        return stringBuilder.toString();
+    }
 }

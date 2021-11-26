@@ -2,6 +2,7 @@ package lib.ui;
 
 import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 public class SearchPageObject extends MainPageObject{
 
@@ -10,7 +11,13 @@ public class SearchPageObject extends MainPageObject{
     private static final String SEARCH_RESULT_ARTICLES = "//*[@resource-id='org.wikipedia:id/page_list_item_title']";
     private static final String ARTICLE_TITLE = SEARCH_RESULT_ARTICLES + "[@text='{article_title}']";
     private static final String CLOSE_BUTTON = "org.wikipedia:id/search_close_btn";
-
+    private static final String TITLE_AND_DESCRIPTION_OF_ARTICLE
+            = "//android.widget.LinearLayout" +
+            "[" +
+            ".//android.widget.TextView[@resource-id='org.wikipedia:id/page_list_item_title'][@text='{article_title}']" +
+            "/../" +
+            "android.widget.TextView[@resource-id='org.wikipedia:id/page_list_item_description'][@text='{article_description}']" +
+            "]";
 
 
     public SearchPageObject(AppiumDriver driver){
@@ -42,5 +49,13 @@ public class SearchPageObject extends MainPageObject{
                 ARTICLE_TITLE,
                 "{article_title}",
                 articleTitle)));
+    }
+
+    public WebElement waitForElementByTitleAndDescription(String title, String description){
+        return waitForElementPresent(By.xpath(replaceTemplates(
+                TITLE_AND_DESCRIPTION_OF_ARTICLE,
+                new String[]{"{article_title}","{article_description}"},
+                new String[]{title, description}
+        )));
     }
 }
