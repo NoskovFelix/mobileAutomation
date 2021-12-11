@@ -44,6 +44,14 @@ public class SearchPageObject extends MainPageObject{
         this.waitForElementNotPresent(By.xpath(SEARCH_RESULT_ARTICLES),10);
     }
 
+    public void checkThatAllSearchArticlesContainText(String text){
+        this.assertAllElementContainText(By.xpath(SEARCH_RESULT_ARTICLES), text);
+    }
+
+    public void checkThatSearchInputContainTextInPlaceHolder(String text){
+        this.assertElementHasText(By.xpath(SEARCH_FIELD), text, "Search input does not contain text:" + text);
+    }
+
     public void openArticleFromSearchResult(String articleTitle){
         waitForElementAndClick(By.xpath(replaceTemplate(
                 ARTICLE_TITLE,

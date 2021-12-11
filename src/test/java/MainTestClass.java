@@ -17,11 +17,8 @@ public class MainTestClass extends CoreTestCase {
     @Test
     public void testCheckContainsThatSearchFieldHasText(){
 
-        mainPageObject.assertElementHasText(
-                By.xpath("//*[@resource-id='org.wikipedia:id/search_container']//*[@text='Search Wikipedia']"),
-                "Search Wikipedia",
-                "text 'Search Wikipedia' not present in the search field"
-        );
+        SearchPageObject searchPageObject = new SearchPageObject(driver);
+        searchPageObject.checkThatSearchInputContainTextInPlaceHolder("Search Wikipedia");
     }
 
     @Test
@@ -38,11 +35,10 @@ public class MainTestClass extends CoreTestCase {
     @Test
     public void testContainWordInSearchTitle(){
 
-        mainPageObject.waitForElementAndClick(By.xpath("//*[@resource-id='org.wikipedia:id/search_container']//*[@text='Search Wikipedia']"));
-
-        mainPageObject.waitForElementAndSendKeys(By.id("org.wikipedia:id/search_src_text"), "JAVA");
-
-        mainPageObject.assertAllElementContainText(By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_title']"),"Java");
+        SearchPageObject searchPageObject = new SearchPageObject(driver);
+        searchPageObject.initSearchInput();
+        searchPageObject.sendValueInSearchInput("Java");
+        searchPageObject.checkThatAllSearchArticlesContainText("Java");
     }
 
     @Test
