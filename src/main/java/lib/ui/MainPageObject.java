@@ -2,6 +2,8 @@ package lib.ui;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.TouchAction;
+import io.appium.java_client.touch.WaitOptions;
+import io.appium.java_client.touch.offset.PointOption;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
@@ -9,7 +11,9 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class MainPageObject {
 
@@ -23,17 +27,19 @@ public class MainPageObject {
         return driver.findElements(by).size() > 0;
     }
 
-    public String getAttributeFromElement(By by, String attribute){
-        WebElement element = waitForElementPresent(by);
+    public String getAttributeFromElement(String locator, String attribute){
+        WebElement element = waitForElementPresent(locator);
         return element.getAttribute(attribute);
     }
 
-    public void compareThatActualValueMoreThanExpected(By by, int expectedValue){
+    public void compareThatActualValueMoreThanExpected(String locator, int expectedValue){
+        By by = this.getLocatorByString(locator);
         int actualValue = driver.findElements(by).size();
         Assert.assertTrue("actual value less than expected", actualValue > expectedValue);
     }
 
-    public void assertAllElementContainText(By by, String text){
+    public void assertAllElementContainText(String locator, String text){
+        By by = this.getLocatorByString(locator);
         List<WebElement> elements = driver.findElements(by);
         for (WebElement element: elements){
             Assert.assertTrue("Element '" + element.getText() + "' not contain '" + text + "'",
@@ -41,14 +47,15 @@ public class MainPageObject {
         }
     }
 
-    public void assertElementHasText(By by, String expectedText, String errorMessage){
-        WebElement element = waitForElementPresent(by);
+    public void assertElementHasText(String locator, String expectedText, String errorMessage){
+        WebElement element = waitForElementPresent(locator);
         String actualText = element.getText();
         Assert.assertEquals(errorMessage, expectedText, actualText);
     }
 
-    public WebElement waitForElementPresent(By by, long timeoutInSec){
+    public WebElement waitForElementPresent(String locator, long timeoutInSec){
 
+        By by = this.getLocatorByString(locator);
         WebDriverWait webDriverWait = new WebDriverWait(driver, timeoutInSec);
         webDriverWait.withMessage("Element '" + by.toString() + "' not present on the page" + "\n");
         return webDriverWait.until(
@@ -56,13 +63,14 @@ public class MainPageObject {
         );
     }
 
-    public void waitForElementAndClear(By by){
-        WebElement element = waitForElementPresent(by);
+    public void waitForElementAndClear(String locator){
+        WebElement element = waitForElementPresent(locator);
         element.clear();
     }
 
-    public boolean waitForElementNotPresent(By by, long timeoutInSec){
+    public boolean waitForElementNotPresent(String locator, long timeoutInSec){
 
+        By by = this.getLocatorByString(locator);
         WebDriverWait webDriverWait = new WebDriverWait(driver, timeoutInSec);
         webDriverWait.withMessage("Element '" + by.toString() + "' present on the page" + "\n");
         return webDriverWait.until(
@@ -70,18 +78,18 @@ public class MainPageObject {
         );
     }
 
-    public WebElement waitForElementPresent(By by){
+    public WebElement waitForElementPresent(String locator){
 
-        return waitForElementPresent(by, 5);
+        return waitForElementPresent(locator, 5);
     }
 
-    public void waitForElementAndClick(By by){
-        WebElement element = waitForElementPresent(by);
+    public void waitForElementAndClick(String locator){
+        WebElement element = waitForElementPresent(locator);
         element.click();
     }
 
-    public void waitForElementAndSendKeys(By by, String value){
-        WebElement element = waitForElementPresent(by);
+    public void waitForElementAndSendKeys(String locator, String value){
+        WebElement element = waitForElementPresent(locator);
         element.sendKeys(value);
     }
 
@@ -97,15 +105,15 @@ public class MainPageObject {
 
         TouchAction touchAction = new TouchAction(driver);
         touchAction
-                .press(middleX, startY)
-                .waitAction(swipeTime)
-                .moveTo(middleX, endY)
+                .press(PointOption.point(middleX, startY))
+                .waitAction(WaitOptions.waitOptions(Duration.ofMillis(swipeTime)))
+                .moveTo(PointOption.point(middleX, endY))
                 .release()
                 .perform();
     }
 
-    public void swipeElementToLeft(By by){
-        WebElement element = waitForElementPresent(by);
+    public void swipeElementToLeft(String locator){
+        WebElement element = waitForElementPresent(locator);
         // самая левая точка элемента
         int leftX = element.getLocation().getX();
         //правая точка элемента = левая точка + ширина элемента
@@ -118,9 +126,9 @@ public class MainPageObject {
 
         TouchAction touchAction = new TouchAction(driver);
         touchAction
-                .press(rightX, middleY)
-                .waitAction(250)
-                .moveTo(leftX, middleY)
+                .press(PointOption.point(rightX, middleY))
+                .waitAction(WaitOptions.waitOptions(Duration.ofMillis(250)))
+                .moveTo(PointOption.point(leftX, middleY))
                 .release()
                 .perform();
     }
@@ -140,5 +148,17 @@ public class MainPageObject {
         }
 
         return stringBuilder.toString();
+    }
+
+    private By getLocatorByString(String locatorWithType){
+        String[] explodedLocator = locatorWithType.split(Pattern.quote(":"), 2);
+        String locatorType = explodedLocator[0];
+        String locator = explodedLocator[1];
+
+        if (locatorType.equals("xpath"))
+            return By.xpath(locator);
+        else if (locatorType.equals("id"))
+            return By.id(locator);
+        else throw new IllegalArgumentException("Cannot get type of locator: " + locatorWithType);
     }
 }

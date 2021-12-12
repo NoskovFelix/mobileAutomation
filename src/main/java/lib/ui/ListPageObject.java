@@ -6,7 +6,7 @@ import org.openqa.selenium.By;
 public class ListPageObject extends MainPageObject{
 
     private static final String DEFAULT_ARTICLE_TITLE =
-            "//*[@resource-id='org.wikipedia:id/page_list_item_title'][@text='{article_title}']";
+            "xpath://*[@resource-id='org.wikipedia:id/page_list_item_title'][@text='{article_title}']";
 
     public ListPageObject(AppiumDriver driver) {
         super(driver);
@@ -14,33 +14,33 @@ public class ListPageObject extends MainPageObject{
 
 
     public void deleteArticleWithSwipe(String articleTitle){
-        swipeElementToLeft(By.xpath(replaceTemplate(
+        swipeElementToLeft(replaceTemplate(
                 DEFAULT_ARTICLE_TITLE,
                 "{article_title}",
-                articleTitle)));
+                articleTitle));
     }
 
     public void checkThatListContainArticle(String articleTitle){
-        waitForElementPresent(By.xpath(replaceTemplate(
+        waitForElementPresent(replaceTemplate(
                 DEFAULT_ARTICLE_TITLE,
                 "{article_title}",
                 articleTitle
-        )));
+        ));
     }
 
     public void checkThatListNotContainArticle(String articleTitle){
-        waitForElementNotPresent(By.xpath(replaceTemplate(
+        waitForElementNotPresent(replaceTemplate(
                 DEFAULT_ARTICLE_TITLE,
                 "{article_title}",
                 articleTitle
-        )), 10);
+        ), 10);
     }
 
     public void openArticle(String articleTitle){
-        waitForElementAndClick(By.xpath(replaceTemplate(
+        waitForElementAndClick(replaceTemplate(
                 DEFAULT_ARTICLE_TITLE,
                 "{article_title}",
                 articleTitle
-        )));
+        ));
     }
 }

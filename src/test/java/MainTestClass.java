@@ -2,13 +2,11 @@ import lib.CoreTestCase;
 import lib.ui.*;
 import org.junit.*;
 import org.openqa.selenium.By;
-import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebElement;
 
 public class MainTestClass extends CoreTestCase {
 
     private MainPageObject mainPageObject;
-    private static final String defaultSearchArticleLocator = "//*[@resource-id='org.wikipedia:id/page_list_item_title']";
 
     protected void setUp() throws Exception {
         super.setUp();
