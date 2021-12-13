@@ -161,4 +161,12 @@ public class MainPageObject {
             return By.id(locator);
         else throw new IllegalArgumentException("Cannot get type of locator: " + locatorWithType);
     }
+
+    public WebElement waitForElementByTitleAndDescriptionCore(String locator, String title, String description){
+        return waitForElementPresent(replaceTemplates(
+                locator,
+                new String[]{"{article_title}","{article_description}"},
+                new String[]{title, description}
+        ));
+    }
 }

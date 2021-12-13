@@ -53,10 +53,15 @@ abstract public class SearchPageObject extends MainPageObject{
     }
 
     public WebElement waitForElementByTitleAndDescription(String title, String description){
-        return waitForElementPresent(replaceTemplates(
+        return this.waitForElementByTitleAndDescriptionCore(
                 TITLE_AND_DESCRIPTION_OF_ARTICLE,
-                new String[]{"{article_title}","{article_description}"},
-                new String[]{title, description}
-        ));
+                title,
+                description
+        );
+//        return waitForElementPresent(replaceTemplates(
+//                TITLE_AND_DESCRIPTION_OF_ARTICLE,
+//                new String[]{"{article_title}","{article_description}"},
+//                new String[]{title, description}
+//        ));
     }
 }

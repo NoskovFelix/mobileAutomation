@@ -58,7 +58,10 @@ public class MainTestClass extends CoreTestCase {
 
         ArticlePageObject articlePageObject = ArticlePageObjectFactory.get(driver);
         if (Platform.getInstance().isAndroid()){
-            articlePageObject.savedArticleToList(folderName);
+            articlePageObject.openArticleOptions();
+            articlePageObject.openArticleOptionWithTitle("Add to reading list");
+            articlePageObject.acquaintedWithTheInformationBoard();
+            articlePageObject.sendReadingListTitle(folderName);
             articlePageObject.clickOKToSaveList();
         }
         else articlePageObject.addArticlesToMySaved();
@@ -68,13 +71,15 @@ public class MainTestClass extends CoreTestCase {
         if (Platform.getInstance().isAndroid()){
             searchPageObject.initSearchInput();
             searchPageObject.sendValueInSearchInput("Java");
+            searchPageObject.openArticleFromSearchResult(article_2);
+            articlePageObject.openArticleOptions();
+            articlePageObject.openArticleOptionWithTitle("Add to reading list");
+            articlePageObject.addArticleInExistingFolder(folderName);
         }
-        searchPageObject.openArticleFromSearchResult(article_2);
-
-        if (Platform.getInstance().isAndroid()){
-            articlePageObject.savedArticleToList(folderName);
+        else {
+            searchPageObject.openArticleFromSearchResult(article_2);
+            articlePageObject.addArticlesToMySaved();
         }
-        else articlePageObject.addArticlesToMySaved();
         articlePageObject.returnToPreviousPage();
 
         NewsPageObject newsPageObject = NewsPageObjectFactory.get(driver);
@@ -100,23 +105,16 @@ public class MainTestClass extends CoreTestCase {
             articlePageObject.returnToPreviousPage();
         }
 
-
         // проверяем, что вторая записб отсталась
         listPageObject.checkThatListContainArticle(article_2);
 
         // плюс дополнительная проверка на то, что удаленного элемента нету на странице
         listPageObject.checkThatListNotContainArticle(article_1);
 
-        listPageObject.openArticle(article_2);
-
-        // добавялем ожидание того, что прогрузилось название статьи и заодно сохраняем элемент для извлечения его текста в след шаге
-        WebElement articleTitle = articlePageObject.getArticleTitleElement(article_2);
-
-        Assert.assertEquals(
-                "Expected article '" + article_2 + "' not equals with actual '" + articleTitle.getText() + "'",
-                article_2,
-                articleTitle.getText()
-                );
+        if (Platform.getInstance().isAndroid())
+            listPageObject.waitForElementByTitleAndDescription(article_2, "programming language");
+        else
+            listPageObject.waitForElementByTitleAndDescription(article_2, "High-level programming language");
     }
 
     @Test

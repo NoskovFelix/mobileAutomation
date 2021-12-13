@@ -1,11 +1,13 @@
 package lib.ui;
 
 import io.appium.java_client.AppiumDriver;
+import org.openqa.selenium.WebElement;
 
 abstract public class ListPageObject extends MainPageObject{
 
     protected static String DEFAULT_ARTICLE_TITLE;
     protected static String SYNC_WINDOW;
+    protected static String TITLE_AND_DESCRIPTION_OF_ARTICLE;
 
     public ListPageObject(AppiumDriver driver) {
         super(driver);
@@ -44,5 +46,13 @@ abstract public class ListPageObject extends MainPageObject{
                 "{article_title}",
                 articleTitle
         ));
+    }
+
+    public WebElement waitForElementByTitleAndDescription(String title, String description) {
+        return this.waitForElementByTitleAndDescriptionCore(
+                TITLE_AND_DESCRIPTION_OF_ARTICLE,
+                title,
+                description
+        );
     }
 }
