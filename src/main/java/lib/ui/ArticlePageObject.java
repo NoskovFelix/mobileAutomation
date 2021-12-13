@@ -3,16 +3,17 @@ package lib.ui;
 import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.WebElement;
 
-public class ArticlePageObject extends MainPageObject{
+abstract public class ArticlePageObject extends MainPageObject{
 
-    private static final String MORE_OPTIONS = "xpath://android.widget.ImageView[@content-desc=\"More options\"]";
-    private static final String OPTION_TITLE = "xpath://*[@text = '{option_title}']";
-    private static final String FOLDER_LIST = "xpath://*[@resource-id = 'org.wikipedia:id/item_title'][@text = '{folder_name}']";
-    private static final String SUCCESS_ACTION = "xpath://android.widget.Button[@text = 'OK']";
-    private static final String READING_LIST_TITLE_INPUT = "id:org.wikipedia:id/text_input";
-    private static final String INFORMATION_BOARD = "xpath://*[@resource-id = 'org.wikipedia:id/onboarding_button'][@text = 'GOT IT']";
-    private static final String RETURN_TO_PREVIOUS = "xpath://android.widget.ImageButton[@content-desc=\"Navigate up\"]";
-    private static final String ARTICLE_TITLE = "xpath://*[@resource-id = 'org.wikipedia:id/view_page_title_text'][@text='{article_title}']";
+    protected static String MORE_OPTIONS;
+    protected static String OPTION_TITLE;
+    protected static String FOLDER_LIST;
+    protected static String SUCCESS_ACTION ;
+    protected static String READING_LIST_TITLE_INPUT;
+    protected static String INFORMATION_BOARD;
+    protected static String RETURN_TO_PREVIOUS;
+    protected static String ARTICLE_TITLE;
+    protected static String UNSAVED_ARTICLE;
 
 
     public ArticlePageObject(AppiumDriver driver) {
@@ -59,5 +60,20 @@ public class ArticlePageObject extends MainPageObject{
                 "{article_title}",
                 title
         ));
+    }
+
+    public void savedArticleToList(String folderName){
+        this.openArticleOptions();
+        this.openArticleOptionWithTitle("Add to reading list");
+        this.acquaintedWithTheInformationBoard();
+        this.sendReadingListTitle(folderName);
+    }
+
+    public void addArticlesToMySaved(){
+        this.waitForElementAndClick(SUCCESS_ACTION);
+    }
+
+    public void setUnsavedArticle(){
+        this.waitForElementAndClick(UNSAVED_ARTICLE);
     }
 }

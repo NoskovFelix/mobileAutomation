@@ -10,6 +10,7 @@ public class WelcomePageObject extends MainPageObject{
     private final static String STEP_LEARN_MORE_DATA_COLLECT_LINK = "id:Learn more about data collected";
     private final static String NEXT_BUTTON = "id:Next";
     private final static String GET_STARTED_BUTTON = "id:Get started";
+    private final static String SKIP_BUTTON = "id:Skip";
 
 
 
@@ -39,5 +40,9 @@ public class WelcomePageObject extends MainPageObject{
 
     public void clickGetStartedButton(){
         this.waitForElementAndClick(GET_STARTED_BUTTON);
+    }
+
+    public void clickSkip(){
+        this.waitForElementAndClick(SKIP_BUTTON);
     }
 }

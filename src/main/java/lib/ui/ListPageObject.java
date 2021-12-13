@@ -1,17 +1,19 @@
 package lib.ui;
 
 import io.appium.java_client.AppiumDriver;
-import org.openqa.selenium.By;
 
-public class ListPageObject extends MainPageObject{
+abstract public class ListPageObject extends MainPageObject{
 
-    private static final String DEFAULT_ARTICLE_TITLE =
-            "xpath://*[@resource-id='org.wikipedia:id/page_list_item_title'][@text='{article_title}']";
+    protected static String DEFAULT_ARTICLE_TITLE;
+    protected static String SYNC_WINDOW;
 
     public ListPageObject(AppiumDriver driver) {
         super(driver);
     }
 
+    public void closeSyncWindow(){
+        this.waitForElementAndClick(SYNC_WINDOW);
+    }
 
     public void deleteArticleWithSwipe(String articleTitle){
         swipeElementToLeft(replaceTemplate(

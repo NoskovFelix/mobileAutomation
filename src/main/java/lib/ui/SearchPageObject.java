@@ -3,20 +3,14 @@ package lib.ui;
 import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.WebElement;
 
-public class SearchPageObject extends MainPageObject{
+abstract public class SearchPageObject extends MainPageObject{
 
-    private static final String SEARCH_FIELD = "xpath://*[@resource-id='org.wikipedia:id/search_container']//*[@text='Search Wikipedia']";
-    private static final String INPUT_FIELD = "id:org.wikipedia:id/search_src_text";
-    private static final String SEARCH_RESULT_ARTICLES = "xpath://*[@resource-id='org.wikipedia:id/page_list_item_title']";
-    private static final String ARTICLE_TITLE = SEARCH_RESULT_ARTICLES + "[@text='{article_title}']";
-    private static final String CLOSE_BUTTON = "id:org.wikipedia:id/search_close_btn";
-    private static final String TITLE_AND_DESCRIPTION_OF_ARTICLE
-            = "xpath://android.widget.LinearLayout" +
-            "[" +
-            ".//android.widget.TextView[@resource-id='org.wikipedia:id/page_list_item_title'][@text='{article_title}']" +
-            "/../" +
-            "android.widget.TextView[@resource-id='org.wikipedia:id/page_list_item_description'][@text='{article_description}']" +
-            "]";
+    protected static String SEARCH_FIELD;
+    protected static String INPUT_FIELD;
+    protected static String SEARCH_RESULT_ARTICLES;
+    protected static String ARTICLE_TITLE;
+    protected static String CLOSE_BUTTON;
+    protected static String TITLE_AND_DESCRIPTION_OF_ARTICLE;
 
 
     public SearchPageObject(AppiumDriver driver){

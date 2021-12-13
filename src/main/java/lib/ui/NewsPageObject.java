@@ -1,12 +1,11 @@
 package lib.ui;
 
 import io.appium.java_client.AppiumDriver;
-import org.openqa.selenium.By;
 
 // страница, которая открывается при входе в приложение
-public class NewsPageObject extends MainPageObject{
+abstract public class NewsPageObject extends MainPageObject{
 
-    private static final String MY_LISTS = "xpath://android.widget.FrameLayout[@content-desc=\"My lists\"]";
+    protected static String MY_LISTS;
 
     public NewsPageObject(AppiumDriver driver) {
         super(driver);
