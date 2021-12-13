@@ -1,5 +1,10 @@
 import lib.CoreTestCase;
+import lib.Platform;
 import lib.ui.*;
+import lib.ui.factories.ArticlePageObjectFactory;
+import lib.ui.factories.ListPageObjectFactory;
+import lib.ui.factories.NewsPageObjectFactory;
+import lib.ui.factories.SearchPageObjectFactory;
 import org.junit.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -15,14 +20,14 @@ public class MainTestClass extends CoreTestCase {
     @Test
     public void testCheckContainsThatSearchFieldHasText(){
 
-        SearchPageObject searchPageObject = new SearchPageObject(driver);
+        SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
         searchPageObject.checkThatSearchInputContainTextInPlaceHolder("Search Wikipedia");
     }
 
     @Test
     public void testCheckThatResultsAreGone(){
 
-        SearchPageObject searchPageObject = new SearchPageObject(driver);
+        SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
         searchPageObject.initSearchInput();
         searchPageObject.sendValueInSearchInput("Java");
         searchPageObject.searchResultMoreOrEqualThanValue(1);
@@ -33,7 +38,7 @@ public class MainTestClass extends CoreTestCase {
     @Test
     public void testContainWordInSearchTitle(){
 
-        SearchPageObject searchPageObject = new SearchPageObject(driver);
+        SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
         searchPageObject.initSearchInput();
         searchPageObject.sendValueInSearchInput("Java");
         searchPageObject.checkThatAllSearchArticlesContainText("Java");
@@ -46,38 +51,56 @@ public class MainTestClass extends CoreTestCase {
         String article_1 = "Java";
         String article_2 = "JavaScript";
 
-        SearchPageObject searchPageObject = new SearchPageObject(driver);
+        SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
         searchPageObject.initSearchInput();
         searchPageObject.sendValueInSearchInput("Java");
         searchPageObject.openArticleFromSearchResult(article_1);
 
-        ArticlePageObject articlePageObject = new ArticlePageObject(driver);
-        articlePageObject.openArticleOptions();
-        articlePageObject.openArticleOptionWithTitle("Add to reading list");
-        articlePageObject.acquaintedWithTheInformationBoard();
-        articlePageObject.sendReadingListTitle(folderName);
-        articlePageObject.clickOKToSaveList();
+        ArticlePageObject articlePageObject = ArticlePageObjectFactory.get(driver);
+        if (Platform.getInstance().isAndroid()){
+            articlePageObject.savedArticleToList(folderName);
+            articlePageObject.clickOKToSaveList();
+        }
+        else articlePageObject.addArticlesToMySaved();
         articlePageObject.returnToPreviousPage();
 
         //добавляем вторую статью
-        searchPageObject.initSearchInput();
-        searchPageObject.sendValueInSearchInput("Java");
+        if (Platform.getInstance().isAndroid()){
+            searchPageObject.initSearchInput();
+            searchPageObject.sendValueInSearchInput("Java");
+        }
         searchPageObject.openArticleFromSearchResult(article_2);
 
-        articlePageObject.openArticleOptions();
-        articlePageObject.openArticleOptionWithTitle("Add to reading list");
-        articlePageObject.addArticleInExistingFolder(folderName);
+        if (Platform.getInstance().isAndroid()){
+            articlePageObject.savedArticleToList(folderName);
+        }
+        else articlePageObject.addArticlesToMySaved();
         articlePageObject.returnToPreviousPage();
 
-        NewsPageObject newsPageObject = new NewsPageObject(driver);
-        newsPageObject.openSavedLists();
+        NewsPageObject newsPageObject = NewsPageObjectFactory.get(driver);
+        if (Platform.getInstance().isAndroid()){
+            newsPageObject.openSavedLists();
+            MyListsPageObject myListsPageObject = new MyListsPageObject(driver);
+            myListsPageObject.openList(folderName);
+        }
+        else{
+            searchPageObject.closeSearchInput();
+            newsPageObject.openSavedLists();
+        }
 
-        MyListsPageObject myListsPageObject = new MyListsPageObject(driver);
-        myListsPageObject.openList(folderName);
-
-        ListPageObject listPageObject = new ListPageObject(driver);
+        ListPageObject listPageObject = ListPageObjectFactory.get(driver);
         // удаляем одну из записей
-        listPageObject.deleteArticleWithSwipe(article_1);
+        if (Platform.getInstance().isAndroid()){
+            listPageObject.deleteArticleWithSwipe(article_1);
+        }
+        else {
+            listPageObject.closeSyncWindow();
+            listPageObject.openArticle(article_1);
+            articlePageObject.setUnsavedArticle();
+            articlePageObject.returnToPreviousPage();
+        }
+
+
         // проверяем, что вторая записб отсталась
         listPageObject.checkThatListContainArticle(article_2);
 
@@ -101,7 +124,7 @@ public class MainTestClass extends CoreTestCase {
 
         String articleTitle = "Java";
 
-        SearchPageObject searchPageObject = new SearchPageObject(driver);
+        SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
         searchPageObject.initSearchInput();
         searchPageObject.sendValueInSearchInput("Java");
         searchPageObject.openArticleFromSearchResult(articleTitle);
@@ -113,7 +136,7 @@ public class MainTestClass extends CoreTestCase {
     @Test
     public void testPresentElementsWithTitleAndDescription(){
 
-        SearchPageObject searchPageObject = new SearchPageObject(driver);
+        SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
         searchPageObject.initSearchInput();
         searchPageObject.sendValueInSearchInput("Java");
 
